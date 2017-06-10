@@ -17,8 +17,8 @@ int main(int argc, char **argv)
 	} else {
 		char *line = malloc(MAX_LINE_LENGTH + 1);
 
-		while ((line = get_next_line(input.fp)) != EOF)
-			printf("%s\n", line);
+		while ((line = get_next_line(input.fp)))
+			printf("nl: %s\n", line);
 	}
 	
 	return 0;

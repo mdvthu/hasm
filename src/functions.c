@@ -51,19 +51,21 @@ void init_args(int argc, char **argv)
 char *get_next_line(FILE *fp) 
 {
 	char *line = malloc(MAX_LINE_LENGTH+1);
-	int char_count = 0;
 	int c;
-	while ((c = fgetc(fp)) != '\n') {
+	int count = 0;
+
+	while ((c = fgetc(fp))) {
+		/* Skip spaces */
 		if (c == ' ')
 			continue;
-		if (char_count >= 1 && c == '/' && line[char_count-1] == '/') {
-			line[char_count-1] = '\n';
+		/* New line represents the end of the loop */
+		if (c == '\n')
 			break;
-		}
-		if (c == EOF) 
-			return EOF;
-		line[char_count++] = c;
+		/* Build the line */
+		line[count++] = c;
 	}
+	
+	line[count] = '\0';
 	return line;
 }
 
