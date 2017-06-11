@@ -17,9 +17,11 @@ int main(int argc, char **argv)
 		exit(EXIT_FAILURE);
 	} else {
 		char *line = malloc(MAX_LINE_LENGTH+1);
-		int count = 1;
-		while (line = get_next_line(input.fp))
-			printf("\nline %2d: %s (length: %zd)\n", count++, line, strlen(line));
+		
+		while ((line = get_next_line(input.fp)))
+			printf("%s\n", line);
+		
+		free(line);
 	}
 	
 	return 0;

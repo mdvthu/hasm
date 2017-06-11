@@ -30,7 +30,7 @@ int fill_filenames(char *input_filename_arg)
 	return 0;
 }
 
-/* init_args: check the arguments are correct, or exit */
+/* init_args: check the command line arguments are correct, or exit */
 void init_args(int argc, char **argv) 
 {
 	/* 1) There should be exactly one argument provided AND 
@@ -46,10 +46,12 @@ void init_args(int argc, char **argv)
 	}
 }
 
-/* get_next_line: get a line of input, return a pointer to 
- * the data without any comments or whitespace */
+/* get_next_line: get a line of input, from a file.
+ * Return a pointer to the next line 
+ * (comments and whitespace removed) */
 char *get_next_line(FILE *fp) 
 {
+	/* *line: to hold the returned line, c: getchar data, count: character counter */
 	char *line = malloc(MAX_LINE_LENGTH+1);
 	int c;
 	int count = 0;
@@ -57,8 +59,8 @@ char *get_next_line(FILE *fp)
 		/* Return NULL pointer when end of file is reached */
 		if (c == EOF)
 			return NULL;
-		/* Ignore tabs and spaces */
-		if (c == ' ' || c == '\t')
+		/* Ignore tabs, spaces, and windows carriage returns */
+		if (c == ' ' || c == '\t' || c == '\r')
 			continue;
 		/* When the newline is reached, terminate the string and
 		 * exit this loop */
