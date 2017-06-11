@@ -18,8 +18,16 @@ int main(int argc, char **argv)
 	} else {
 		char *line = malloc(MAX_LINE_LENGTH+1);
 		
-		while ((line = get_next_line(input.fp)))
-			printf("%s\n", line);
+		while ((line = get_next_line(input.fp))) {
+			printf("%s", line);
+			if (line[0] == '@')
+				printf(" (A-instruction)");
+			if (strchr(line, ';'))
+				printf(" (jump instruction)");
+			if (strchr(line, '='))
+				printf(" (dest. instruction)");
+			printf("\n");
+		}
 		
 		free(line);
 	}
