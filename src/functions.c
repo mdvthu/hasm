@@ -53,20 +53,37 @@ char *get_next_line(FILE *fp)
 	char *line = malloc(MAX_LINE_LENGTH+1);
 	int c;
 	int count = 0;
-
 	while ((c = fgetc(fp))) {
-		/* Skip spaces */
-		if (c == ' ')
+		/* Return NULL pointer when end of file is reached */
+		if (c == EOF)
+			return NULL;
+		/* Ignore tabs and spaces */
+		if (c == ' ' || c == '\t')
 			continue;
-		/* New line represents the end of the loop */
-		if (c == '\n')
+		/* When the newline is reached, terminate the string and
+		 * exit this loop */
+		if (c == '\n') {
+			line[count] = '\0';
 			break;
-		/* Build the line */
+		}
+		/* Match a comment:
+		 * fill in the previous '/' with string terminator,
+		 * advance to the end of the line,
+		 * exit the loop */
+		if (c == '/' && line[count-1] == '/' && count >= 1) {
+			line[count-1] = '\0';
+			while ((c = fgetc(fp)) != '\n');
+			break;
+		}
+		/* Build the string */
 		line[count++] = c;
 	}
-	
-	line[count] = '\0';
-	return line;
+
+	/* Use recursion to remove blank lines */
+	if (strlen(line) == 0)
+		get_next_line(fp);
+	else
+		return line;
 }
 
 /* bin_conv: copies an input string (in decimal) to

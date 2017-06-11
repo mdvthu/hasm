@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include "functions.h"
 
 int main(int argc, char **argv)
@@ -15,10 +16,10 @@ int main(int argc, char **argv)
 		perror(input.fullname);
 		exit(EXIT_FAILURE);
 	} else {
-		char *line = malloc(MAX_LINE_LENGTH + 1);
-
-		while ((line = get_next_line(input.fp)))
-			printf("nl: %s\n", line);
+		char *line = malloc(MAX_LINE_LENGTH+1);
+		int count = 1;
+		while (line = get_next_line(input.fp))
+			printf("\nline %2d: %s (length: %zd)\n", count++, line, strlen(line));
 	}
 	
 	return 0;
