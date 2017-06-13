@@ -19,9 +19,14 @@ int main(int argc, char **argv)
 		char *line = malloc(MAX_LINE_LENGTH+1);
 		
 		while ((line = get_next_line(input.fp))) {
+
 			printf("%s", line);
-			if (line[0] == '@')
-				printf(" (A-instruction)");
+			if (line[0] == '@') {
+				int a_inst;
+				sscanf(&line[1], "%d", &a_inst);
+				printf(" (A-instruction: %d)", a_inst);
+
+			}
 			if (strchr(line, ';'))
 				printf(" (jump instruction)");
 			if (strchr(line, '='))

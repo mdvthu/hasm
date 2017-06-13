@@ -106,11 +106,3 @@ void bin_conv(char destination[16], char *input_str)
 	}
 }
 
-/* check_inst_type: analyse the line for the instruction type */
-char check_inst_type(char *line)
-{	
-	if (line[0] == '@' && isdigit(line[1]))
-		return 'A';
-	else
-		return '\0';
-}
