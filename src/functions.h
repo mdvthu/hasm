@@ -2,6 +2,7 @@
 #define INPUT_FN_EXT "asm"
 #define OUTPUT_FN_EXT "hack"
 #define MAX_LINE_LENGTH 100
+#define INSTRUCTION_LENGTH 16
 
 /* Check the command line arguments */
 void init_args(int argc, char **argv);
@@ -17,3 +18,5 @@ struct file {
 struct file output,input;
 
 char *get_next_line();
+
+char *bin_conv(int input);

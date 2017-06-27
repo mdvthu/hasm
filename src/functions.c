@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <math.h>
 #include "functions.h"
 
 /* fill_filenames: fill the filename struct */
@@ -88,21 +89,27 @@ char *get_next_line(FILE *fp)
 		return line;
 }
 
-/* bin_conv: copies an input string (in decimal) to
- * dest. char string (in "binary" -- '0' and '1' characters) */
-void bin_conv(char destination[16], char *input_str)
-{
-	long source_int = strtol(input_str, (char **)input_str + strlen(input_str), 10);
-	
-	destination[16] = '\0';
-	int bit_position = 15;
 
-	while (bit_position >= 1) {
-		while (source_int > 0) {	
-			destination[bit_position--] = (source_int % 2) + '0';
-			source_int /= 2;
-		}
-		destination[bit_position--] = '0';
+/* returns a 16 character string, of input in "binary": '0' and '1' characters */
+char *bin_conv(int input) 
+{
+	char *output = malloc(17);
+
+	/* set counter to the least significant bit for the input */
+	int count = 15;
+
+	/* Terminate the string */
+	output[count+1] = '\0';
+
+	/* Fill the output string from the right = least significant bit */
+	while (input >= 1) {
+		output[count--] = ((input & 1) + '0'); /* (input & 1) == input % 2 [bitwise] */
+		input >>= 1; /* (input >> 1) == input / 2 */
 	}
+	/* Pad to the left with 0's */
+	while (count >= 0)
+		output[count--] = '0';
+
+	return output;
 }
 
