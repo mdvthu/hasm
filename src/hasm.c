@@ -63,13 +63,99 @@ int main(int argc, char **argv)
 
 				/* Identify and process "comp" */
 				comp_inst = malloc(20);
+				/* Copy the string after the dest instruction */
 				if (strchr(line, '=')) {
 					strcpy(comp_inst, (strchr(line, '=') + 1));
 				} else {
 					strcpy(comp_inst, line);
 				}
+				/* Remove the Jump instruction, if one exits */
 				if (strchr(comp_inst, ';'))
 					*(strchr(comp_inst, ';')) = '\0';
+				/* If Comp contains M, set the A bit to 1 and change M to A */
+				if (strchr(comp_inst, 'M')) {
+					output_bin[3] = '1';
+					*(strchr(comp_inst, 'M')) = 'A';
+				}
+				if (strcmp(comp_inst, "0") == 0) {
+					output_bin[4] = '1';
+					output_bin[6] = '1';
+					output_bin[8] = '1';
+				} else if (strcmp(comp_inst, "1") == 0) {
+					output_bin[4] = '1';
+					output_bin[5] = '1';
+					output_bin[6] = '1';
+					output_bin[7] = '1';
+					output_bin[8] = '1';
+					output_bin[9] = '1';
+				} else if (strcmp(comp_inst, "-1") == 0) {
+					output_bin[4] = '1';
+					output_bin[5] = '1';
+					output_bin[6] = '1';
+					output_bin[8] = '1';
+				} else if (strcmp(comp_inst, "D") == 0) {
+					output_bin[6] = '1';
+					output_bin[7] = '1';
+				} else if (strcmp(comp_inst, "A") == 0) {
+					output_bin[4] = '1';
+					output_bin[5] = '1';
+				} else if (strcmp(comp_inst, "!D") == 0) {
+					output_bin[6] = '1';
+					output_bin[7] = '1';
+					output_bin[9] = '1';
+				} else if (strcmp(comp_inst, "!A") == 0) {
+					output_bin[4] = '1';
+					output_bin[5] = '1';
+					output_bin[9] = '1';
+				} else if (strcmp(comp_inst, "-D") == 0) {
+					output_bin[6] = '1';
+					output_bin[7] = '1';
+					output_bin[8] = '1';
+					output_bin[9] = '1';
+				} else if (strcmp(comp_inst, "-A") == 0) {
+					output_bin[4] = '1';
+					output_bin[5] = '1';
+					output_bin[8] = '1';
+					output_bin[9] = '1';
+				} else if (strcmp(comp_inst, "D+1") == 0) {
+					output_bin[5] = '1';
+					output_bin[6] = '1';
+					output_bin[7] = '1';
+					output_bin[8] = '1';
+					output_bin[9] = '1';
+				} else if (strcmp(comp_inst, "A+1") == 0) {
+					output_bin[4] = '1';
+					output_bin[5] = '1';
+					output_bin[7] = '1';
+					output_bin[8] = '1';
+					output_bin[9] = '1';
+				} else if (strcmp(comp_inst, "D-1") == 0) {
+					output_bin[6] = '1';
+					output_bin[7] = '1';
+					output_bin[8] = '1';
+				} else if (strcmp(comp_inst, "A-1") == 0) {
+					output_bin[4] = '1';
+					output_bin[5] = '1';
+					output_bin[8] = '1';
+				} else if (strcmp(comp_inst, "D+A") == 0) {
+					output_bin[8] = '1';
+				} else if (strcmp(comp_inst, "D-A") == 0) {
+					output_bin[5] = '1';
+					output_bin[8] = '1';
+					output_bin[9] = '1';
+				} else if (strcmp(comp_inst, "A-D") == 0) {
+					output_bin[7] = '1';
+					output_bin[8] = '1';
+					output_bin[9] = '1';
+				} else if (strcmp(comp_inst, "D&A") == 0) {
+				} else if (strcmp(comp_inst, "D|A") == 0) {
+					output_bin[5] = '1';
+					output_bin[7] = '1';
+					output_bin[9] = '1';
+				} else {
+					fprintf(stderr, "Invalid comp. instruction\n");
+					exit(EXIT_FAILURE);
+				}
 
 
 				/* Identify and process a "jump" instruction */
@@ -103,7 +189,7 @@ int main(int argc, char **argv)
 				}
 
 			}
-			printf("%s %10s \t[Dest: %10s. Comp: %10s. Jump: %10s\n", output_bin, line, dest_inst, comp_inst, jump_inst);
+			printf("%s\n", output_bin);
 			free(output_bin);
 			
 		}
