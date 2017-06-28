@@ -21,6 +21,11 @@ int main(int argc, char **argv)
 		while ((line = get_next_line(input.fp))) {
 
 			char *output_bin = malloc(17);
+			
+			char *dest_inst = NULL; 
+			char *comp_inst = NULL;
+			char *jump_inst = NULL;
+			
 			for (int i = 0; i < 16; i++)
 				output_bin[i] = '0';
 
@@ -43,14 +48,11 @@ int main(int argc, char **argv)
 				output_bin[1] = '1';
 				output_bin[2] = '1';
 
-				char *comp_inst = NULL;
-				char *dest_inst = NULL; 
-				char *jump_inst = NULL;
-				
 				/* Identify and process a "dest" instruction */
 				if (strchr(line, '=')) {
 					dest_inst = malloc(10);
-					strncpy(dest_inst, line, strchr(line, '=') - line);
+					strncpy(dest_inst, line, (strchr(line, '=') - line));
+
 					if (strchr(dest_inst, 'M'))
 						output_bin[12] = '1';
 					if (strchr(dest_inst, 'D'))
@@ -59,27 +61,38 @@ int main(int argc, char **argv)
 						output_bin[10] = '1';
 				}
 
+				/* Identify and process "comp" */
+				comp_inst = malloc(20);
+				if (strchr(line, '=')) {
+					strcpy(comp_inst, (strchr(line, '=') + 1));
+				} else {
+					strcpy(comp_inst, line);
+				}
+				if (strchr(comp_inst, ';'))
+					*(strchr(comp_inst, ';')) = '\0';
+
+
 				/* Identify and process a "jump" instruction */
 				if (strrchr(line, ';')) {
 					jump_inst = malloc(10);
-					strncpy(jump_inst, strchr(line, ';'), 11);
-					if (strcmp(jump_inst, ";JMP") == 0) {
+					strncpy(jump_inst, (strchr(line, ';') + 1), 11);
+					if (strcmp(jump_inst, "JMP") == 0) {
 						output_bin[13] = '1';
 						output_bin[14] = '1';
 						output_bin[15] = '1';
-					} else if (strcmp(jump_inst, ";JGT") == 0) {
+					} else if (strcmp(jump_inst, "JGT") == 0) {
 						output_bin[15] = '1';
-					} else if (strcmp(jump_inst, ";JEQ") == 0) {
+					} else if (strcmp(jump_inst, "JEQ") == 0) {
 						output_bin[14] = '1';
-					} else if (strcmp(jump_inst, ";JGE") == 0) {
+					} else if (strcmp(jump_inst, "JGE") == 0) {
 						output_bin[14] = '1';
 						output_bin[15] = '1';
-					} else if (strcmp(jump_inst, ";JLT") == 0) {
+					} else if (strcmp(jump_inst, "JLT") == 0) {
 						output_bin[13] = '1';
-					} else if (strcmp(jump_inst, ";JNE") == 0) {
+					} else if (strcmp(jump_inst, "JNE") == 0) {
 						output_bin[13] = '1';
 						output_bin[15] = '1';
-					} else if (strcmp(jump_inst, ";JLE") == 0) {
+					} else if (strcmp(jump_inst, "JLE") == 0) {
 						output_bin[13] = '1';
 						output_bin[14] = '1';
 					} else {
@@ -87,12 +100,10 @@ int main(int argc, char **argv)
 						fprintf(stderr, "Invalid Jump-instruction/; : %s\n", line);
 						exit(EXIT_FAILURE);
 					}
-
-
 				}
 
 			}
-			printf("%s (%s)\n", output_bin, line);
+			printf("%s %10s \t[Dest: %10s. Comp: %10s. Jump: %10s\n", output_bin, line, dest_inst, comp_inst, jump_inst);
 			free(output_bin);
 			
 		}
