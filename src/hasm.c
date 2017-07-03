@@ -12,20 +12,29 @@ int main(int argc, char **argv)
 
 	/* open the input file for reading, or exit with an error */
 	input.fp = fopen(input.fullname, "r");
+	output.fp = fopen(output.fullname, "w");
+
+	/* check pointers are set, or exit with error */
 	if (input.fp == NULL) {
 		perror(input.fullname);
 		exit(EXIT_FAILURE);
+	} else if (output.fp == NULL) {
+		perror(output.fullname);
+		exit(EXIT_FAILURE);
 	} else {
+		/* Allocate memory to hold the contents of the next line */
 		char *line = malloc(MAX_LINE_LENGTH+1);
 		
 		while ((line = get_next_line(input.fp))) {
 
 			char *output_bin = malloc(17);
 			
+			/* Create pointers for all the processed parts of a C-instruction */
 			char *dest_inst = NULL; 
 			char *comp_inst = NULL;
 			char *jump_inst = NULL;
 			
+			/* Set all the output bits to '0' */
 			for (int i = 0; i < 16; i++)
 				output_bin[i] = '0';
 
@@ -77,6 +86,8 @@ int main(int argc, char **argv)
 					output_bin[3] = '1';
 					*(strchr(comp_inst, 'M')) = 'A';
 				}
+				/* Process the "comp" part of the instruction,
+				 * based on the I.S.A. */
 				if (strcmp(comp_inst, "0") == 0) {
 					output_bin[4] = '1';
 					output_bin[6] = '1';
@@ -153,6 +164,7 @@ int main(int argc, char **argv)
 					output_bin[7] = '1';
 					output_bin[9] = '1';
 				} else {
+					/* If we get to this point, the instruction is invalid */
 					fprintf(stderr, "Invalid comp. instruction\n");
 					exit(EXIT_FAILURE);
 				}
