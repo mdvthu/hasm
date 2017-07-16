@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <math.h>
 #include "functions.h"
+#include "uthash.h"
 
 /* fill_filenames: fill the filename struct */
 int fill_filenames(char *input_filename_arg)
@@ -112,4 +113,73 @@ char *bin_conv(int input)
 
 	return output;
 }
+
+/* Hash table code */
+struct symbols {
+    char symbol[100];             /* key */
+    int id;
+    UT_hash_handle hh;         /* makes this structure hashable */
+};
+
+struct symbols *s, *tmp, *hash_table = NULL;
+
+int add_symbol(const char *key, const int val) 
+{
+	s = (struct symbols*)malloc(sizeof(struct symbols));
+	/* Exit if allocation fails */
+	if (s == NULL)
+		exit(-1);
+
+	strncpy(s->symbol, key, 100UL);
+	s->id = val;
+	HASH_ADD_STR( hash_table, symbol, s);
+
+	return 0;
+}
+
+int lookup_symbol(const char *key) 
+{
+	HASH_FIND_STR(hash_table, key, s);
+	if (s)
+		return s->id;
+	else
+		return -1;
+}
+
+void add_predef_symbols() 
+{
+	/* SP 	-> 	@0
+	 * LCL 	->	@1
+	 * ARG	->	@2
+	 * THIS	->	@3
+	 * THAT ->	@4
+	 * R0 .. R15 ->	@0 .. @15
+	 * SCREEN	@16384
+	 * KBD	->	@24576
+	 */
+	add_symbol("SP", 0);
+	add_symbol("LCL", 1);
+	add_symbol("ARG", 2);
+	add_symbol("THIS", 3);
+	add_symbol("THAT", 4);
+	add_symbol("R0", 0);
+	add_symbol("R1", 1);
+	add_symbol("R2", 2);
+	add_symbol("R3", 3);
+	add_symbol("R4", 4);
+	add_symbol("R5", 5);
+	add_symbol("R6", 6);
+	add_symbol("R7", 7);
+	add_symbol("R8", 8);
+	add_symbol("R9", 9);
+	add_symbol("R10", 10);
+	add_symbol("R11", 11);
+	add_symbol("R12", 12);
+	add_symbol("R13", 13);
+	add_symbol("R14", 14);
+	add_symbol("R15", 15);
+	add_symbol("SCREEN", 16384);
+	add_symbol("KBD", 24576);
+}
+
 
