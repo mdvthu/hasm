@@ -41,7 +41,7 @@ int main(int argc, char **argv)
 				line[i] = line[i+1];
 			/* Remove ')' from the end of the line */
 			line[strlen(line)-1] = '\0';
-			printf("Adding %s->%d to hashtable\n", line, linenumber);
+			/* Add the label to the hash table */
 			add_symbol(line, linenumber);
 		} else {
 			linenumber++;
