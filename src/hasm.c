@@ -54,13 +54,11 @@ int main(int argc, char **argv)
 
 	int varcount = 16;
 
-	int linecount = 0;
 	while ((line = get_next_line(input.fp))) {
 		/* Skip line labels */
 		if (line[0] == '(')
 			continue;
 
-		printf("%02d\n", linecount++);
 		char *output_bin = malloc(17);
 
 		/* Create pointers for all the processed parts of a C-instruction */
@@ -83,27 +81,15 @@ int main(int argc, char **argv)
 				/* if the @-instruction doesn't start with a number,
 				 * look it up in the hash-table */
 				a_inst = lookup_symbol(&line[1]);
-				printf("Looking up symbol: %s ->%d\n", &line[1], a_inst);
 
 				/* if this fails, add it to the hash-table as a variable */
 				if (a_inst != -1) {
 					output_bin = bin_conv(a_inst);
 				} else {
-					printf("Adding symbol %s as variable %d\n", &line[1], varcount);
 					add_symbol(&line[1], varcount);
 					a_inst = varcount++;
 					output_bin = bin_conv(a_inst);
 				}
-				 /*
-				 * 3) @variable
-				 * If "variable" doesn't already exist, create a new symbol in the table
-				 * Allocate the variables from @1024 onwards
-				 */
-
-
-				/* exit with an error if invalid */
-			//	fprintf(stderr, "Invalid A-instruction: %s\n", line);
-			//	exit(EXIT_FAILURE);
 			}
 		} else {
 			/* Must represent a C-instruction */
