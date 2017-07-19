@@ -84,10 +84,11 @@ char *get_next_line(FILE *fp)
 	}
 
 	/* Use recursion to remove blank lines */
-	if (strlen(line) == 0)
-		get_next_line(fp);
-	else
+	if (strlen(line) != 0)
 		return line;
+	else
+		get_next_line(fp);
+
 }
 
 
